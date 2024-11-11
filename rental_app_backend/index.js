@@ -31,33 +31,47 @@ app.get('/', (req, res) => {
 
 // Get all listings with optional filters
 app.get('/listings', async (req, res) => {
-  const { min_price, max_price, location, bedrooms } = req.query;
+  // Extract query parameters from the request
+  const { minPrice, maxPrice, location, minBedrooms } = req.query;
 
+  // Log received filters
+  console.log('Received filters:', req.query);
+
+  // Initialize the SQL query and parameter array
   let query = 'SELECT * FROM listings WHERE 1=1';
   const params = [];
 
-  if (min_price) {
-    params.push(min_price);
+  // Apply filters based on query parameters
+  if (minPrice) {
+    params.push(parseFloat(minPrice)); // Ensure it's treated as a number
     query += ` AND price >= $${params.length}`;
   }
-  if (max_price) {
-    params.push(max_price);
+
+  if (maxPrice) {
+    params.push(parseFloat(maxPrice)); // Ensure it's treated as a number
     query += ` AND price <= $${params.length}`;
   }
+
   if (location) {
-    params.push(location);
+    params.push(location); // Assuming location is a string
     query += ` AND location = $${params.length}`;
   }
-  if (bedrooms) {
-    params.push(bedrooms);
+
+  if (minBedrooms) {
+    params.push(parseInt(minBedrooms)); // Ensure it's treated as an integer
     query += ` AND bedrooms >= $${params.length}`;
   }
 
+  // Log the final query and parameters for debugging
+  console.log('Final query:', query);
+  console.log('Parameters:', params);
+
   try {
+    // Execute the query with the parameters
     const result = await pool.query(query, params);
-    res.json(result.rows);
+    res.json(result.rows); // Return the results as JSON
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Itnternal server error' });
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });

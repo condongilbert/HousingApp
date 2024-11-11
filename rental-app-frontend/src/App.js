@@ -11,10 +11,11 @@ const App = () => {
         maxPrice: '',
         minBedrooms: '',
     });
-
+    
     // Fetch listings when component mounts or when filters change
     useEffect(() => {
         const fetchListings = async () => {
+            console.log(filters)
             const response = await axios.get('http://localhost:5000/listings', { params: filters });
             setListings(response.data);
         };
@@ -23,12 +24,12 @@ const App = () => {
 
     // Handle filter change
     const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [name]: value,
-        }));
-    };
+      const { name, value } = e.target;
+      setFilters((prevFilters) => ({
+          ...prevFilters,
+          [name]: name === 'minPrice' || name === 'maxPrice' || name === 'minBedrooms' ? value.trim() : value, // trim spaces for numeric fields
+      }));
+  };
 
     return (
         <div className="App">
