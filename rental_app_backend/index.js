@@ -1,7 +1,9 @@
 const { Pool } = require('pg');
 const express = require('express');
 const app = express(); // Initialize the app
-const port = 3000;
+const cors = require('cors');
+app.use(cors());
+const port = 5000;
 require('dotenv').config();
 
 app.listen(port, () => {

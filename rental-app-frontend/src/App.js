@@ -15,7 +15,7 @@ const App = () => {
     // Fetch listings when component mounts or when filters change
     useEffect(() => {
         const fetchListings = async () => {
-            const response = await axios.get('/listings', { params: filters });
+            const response = await axios.get('http://localhost:5000/listings', { params: filters });
             setListings(response.data);
         };
         fetchListings();
